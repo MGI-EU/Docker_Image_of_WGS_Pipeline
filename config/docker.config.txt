@@ -1,0 +1,102 @@
+## queue and momory setting(must)
+FileName=WGS_2020901;    ## (String,optional) File name of shell,default[]
+SeqPlatform=BGISEQ-500;   ## (String,required) sequencer
+SeqCenter=BGI;            ## (String,required) sequencing center
+######################### PART-1: database path choosen #########################
+DATAPATH=; 			## (Folder,required) the path of database. default[/opt/pipeline/database]
+reference=; 			## (File,required) the reference prefix of fasta index and bwa index. default[$DATAPATH/reference/hg19/hg19.fa]
+
+######################### PART-2: tools path choosen ########################
+BIN=;		## (Folder,required) the path of tools. default[/opt/pipeline/bin]
+LIBPATH=;	## (Folder,required) the path of library for ppipeline. default[/opt/pipeline/lib]
+GNUdir=;			## (Folder,optional) for gnuplot. default[$BIN/gnuplot-4.6.7/PostScript]
+SOAPnuke=;			## (File,required) used to filter raw reads. default[$BIN/SOAPnuke1.5.6]
+fqcheck=;			## (File,required) used to check fastq file. default[$BIN/fqcheck33]
+bwa=;				## (File,required) used to align the reads to reference. default[$BIN/bwa]
+samtools=;			## (File,required) used to manipulate the aligned reads, such as:sort,convert,index,faidx. default[$BIN/samtools]
+picard=;			## (File,required) used to mark PCR duplicates, filter and merge bam files. default[$BIN/picard-2.10.9.jar]
+java8=;				## (File,required) Path to java v1.8. default[$BIN/java]
+container=/usr/bin/docker;			## (File,required) Path to docker or singularity. default[$BIN/singularity]. Running docker needs connect to google. If choosing docker, $deepvariant_SIF could be null.
+deepvariant=;                   ## (File,required) default[/opt/deepvariant/bin/run_deepvariant]
+deepvariant_SIF=;		## (File,required when $container is singularity) default[$BIN/deepvariant_0.10.0.sif]
+
+######################### PART-3: analysis chosen # ########################
+BwaCheck=;			## (true/false)run samtools flagstat for bwa bam. default[true]
+SortCheck=;			## (true/false)run samtools flagstat for sort bam. default[true]
+MkupCheck=true;			## (true/false)run samtools flagstat for mkdup bam. default[false].It requires deepvariant_bam=mkdup.
+BAMcheck=; 			## check mdi-data and remove. default[true]. It needs BwaCheck=true and SortCheck=true.
+CoverageCheck=;			## (true/false,optional) sorted bam coverage statistics. default[true]
+
+######################### PART-4: program parameters #######################
+SOAPnukePara=; 			## default[-l 5 -q 0.5 -n 0.1 -f AAGTCGGAGGCCAAGCGGTCTTAGGAAGACAA -r AAGTCGGATCGTAGCCATGTCGTTCTGTGAGCCAAGGAGTTG]
+bwaMemPara=; 			## default [-M -t 4 -k 32]
+mkdupPara=; 			## picard MergeSamFiles parameters; default[REMOVE_DUPLICATES=false VALIDATION_STRINGENCY=SILENT ASSUME_SORTED=true PROGRAM_RECORD_ID=null]
+run_deepvariant=;		## (true/false,optional) run deepvariant or not. default[true]
+deepvariant_bam=;		## (optional,[sort,mkdup]).Specify a bam file for deepvariant.default[mkdup].
+deepvariant_mode=;              ## WGS/WES/Pacbio. default[WGS]
+deepvariant_bed=;               ## (File,optional) A BED file used to specify the region of SNPs. default[]
+deepvariant_core=;              ## (Int,required) used to specify the number of cores for running deepvariant. default[4]
+deepvariant_version=;           ## (version,required) default["0.10.0"]
+deepvariant_mem=;		## (File,required) to specify the memory of singularity.default[$DATAPATH/singularity_resource.toml]. If choosing docker as container, $deepvariant_mem could be null.
+gpu=true;				## (true,false) if using GPU version when running deepvariant. default[false]
+
+######################### PART-5: parameters for jobs submitting #########
+CLEAN_job_name=CLEAN;           ## job name for cleaning reads
+CLEAN_nodes=1;                  ## count of nodes for this job
+CLEAN_cpus_per_task=4;          ## count of cpus for this job
+CLEAN_mem=3072;                 ## memory for this job (in mega bytes,MB)
+CLEAN_time=3-00:00:00;          ## wall time limit
+
+ALIGN_job_name=ALIGN;           ## job name for aligning
+ALIGN_nodes=1;
+ALIGN_cpus_per_task=4;
+ALIGN_mem=6144;
+ALIGN_time=3-00:00:00;
+
+CKBWA_job_name=CKBWA;           ## job name for checking the result of bwa
+CKBWA_nodes=1;
+CKBWA_cpus_per_task=1;
+CKBWA_mem=500;
+CKBWA_time=20:00:00;
+
+SORT_job_name=SORT;             ## job name for sorting bam
+SORT_nodes=1;
+SORT_cpus_per_task=1;
+SORT_mem=12288;
+SORT_time=3-00:00:00;
+
+CKBAM_job_name=CKBAM;           ## job name for checking sorted bams
+CKBAM_nodes=1;
+CKBAM_cpus_per_task=1;
+CKBAM_mem=6144;
+CKBAM_time=3-00:00:00;
+
+MKDUP_job_name=MKDUP;           ## job name for marking duplication
+MKDUP_nodes=1;
+MKDUP_cpus_per_task=1;
+MKDUP_mem=12288;
+MKDUP_time=3-00:00:00;
+
+CKDUP_job_name=CKDUP;           ## job name for checking duplication-marked bams
+CKDUP_nodes=1;
+CKDUP_cpus_per_task=1;
+CKDUP_mem=12288;
+CKDUP_time=3-00:00:00;
+
+COVER_job_name=COVER;           ## job name for bam coverage statistics
+COVER_nodes=1;
+COVER_cpus_per_task=1;
+COVER_mem=1024;
+COVER_time=2-00:00:00;
+
+DEEP_job_name=DEEPVARIANT;      ## job name for deepvariant
+DEEP_mem=20480;
+DEEP_time=1-00:00:00;
+DEEP_nodes=4;			## CPU version
+DEEP_cpus_per_task=1;		## CPU version
+
+DEEP_cpus_per_gpu=1; 		## GPU version 
+DEEP_gpus_per_task=1;		## GPU version 
+DEEP_gpus_per_socket=1;		## GPU version 
+DEEP_gpus_per_node=1;		## GPU version 
+DEEP_gpus=1;			## GPU version
