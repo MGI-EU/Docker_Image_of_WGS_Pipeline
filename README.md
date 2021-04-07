@@ -103,6 +103,6 @@ Put the TMP folder in the database folder
            -v name of deepvariant image
 ```
 
-**1.5 Result path**
+### 1.5 Result path
 
 OUTPUT_DIR/RESULT_DIR_NAME
