@@ -1,5 +1,9 @@
 # Docker_Image_of_WGS_Pipeline
 
+This image has been tested by MGI EU team on 2020-12-14 based on the pipeline with the original distribution [Docker_Image_of_WGS_Pipeline](https://github.com/MGI-EU/Docker_Image_of_WGS_Pipeline), version 1.0 .
+
+The latest version will be automatically followed when building the image.
+
 ### Introduction
 
 This is used to build the WGS pipeline docker image.  
@@ -14,6 +18,7 @@ https://bgitech-my.sharepoint.com/:u:/g/personal/chengbochen_genomics_cn/EaLtQNe
 The download links reference genome (software) is: https://pan.genomics.cn/ucdisk/s/Urmq6b
 
 
+
 Example command:
 ```
 unzip WGS_pipeline.zip
@@ -25,7 +30,7 @@ After finishing the installation, you can get the wgspipeline image locally
 
 Use the command ```sudo docker images``` to view
 
-#### 1.1 Required software
+### 1.1 Required software
 
 (1) Docker
 
@@ -50,7 +55,7 @@ samtools (v1.11) (using htslib 1.11)
 
 R (v3.6.0)
 
-#### 1.2 installation
+### 1.2 installation
 
 Use docker to import this image file:
 
@@ -61,7 +66,7 @@ install deepvariant :
 ```sudo /usr/bin/docker pull google/deepvariant```
 
 
-#### 1.3 Configuration file
+### 1.3 Configuration file
 
 
 **pipeline.sh** : The script to run the pipeline.
@@ -79,7 +84,7 @@ Files in the database folder：
 **sample.info** : information of samples
 
 
-#### 1.4 run
+### 1.4 run
 
 Put the docker.config.txt, singularity.config.txt, sample.info in the database folder
 
